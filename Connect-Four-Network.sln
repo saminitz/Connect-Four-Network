@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Connect Four Server", "Connect Four Server\Connect Four Server.csproj", "{E1E90034-C6AE-489D-94B3-B5A691BE409E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E1E90034-C6AE-489D-94B3-B5A691BE409E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1E90034-C6AE-489D-94B3-B5A691BE409E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1E90034-C6AE-489D-94B3-B5A691BE409E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1E90034-C6AE-489D-94B3-B5A691BE409E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {054194FF-8A73-413D-8D05-2AF89455BF8E}
+	EndGlobalSection
+EndGlobal
