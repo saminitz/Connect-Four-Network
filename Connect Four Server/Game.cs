@@ -13,8 +13,29 @@ namespace Connect_Four_Server
         private int[,] _grid;
         private int _currentPlayer;
 
-        private int GetNextYPos(int x)
+        public Game()
         {
+            _grid = new int[_gridSizeX, _gridSizeY];
+            _currentPlayer = 0;
+        }
+
+        #region Helper Methods
+        private int GetNextYPos(int xPos)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion Helper Methods
+
+        #region GameCore
+        public Task StartGame()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void PlayerChange()
+        {
+            CheckForWin();
+            _currentPlayer = (_currentPlayer + 1) % 2;
             throw new NotImplementedException();
         }
 
@@ -22,10 +43,23 @@ namespace Connect_Four_Server
         {
             throw new NotImplementedException();
         }
+        #endregion GameCore
 
-        private void PlayerAction(int player, int xPos)
+        #region Player
+        public void PlayerAction(int player, int xPos)
         {
             throw new NotImplementedException();
         }
+
+        private void ValidateAction(int xPos)
+        {
+            // Check if it is the players turn
+
+            if (GetNextYPos(xPos) == -1)
+            {
+                throw new ArgumentException("The column is already full");
+            }
+        }
+        #endregion Player
     }
 }
