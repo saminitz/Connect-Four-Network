@@ -10,10 +10,10 @@ namespace Connect_Four_Server
     {
         private const int _gridSizeX = 7;
         private const int _gridSizeY = 6;
-        private int?[,] _grid;
-        private int _currentPlayer;
+        private string[,] _grid;
+        private string _currentPlayer;
 
-        public int CurrentPlayer
+        public string CurrentPlayer
         {
             get
             {
@@ -26,14 +26,13 @@ namespace Connect_Four_Server
             get; private set;
         }
 
-        public event EventHandler OnGameStarted;
         public event EventHandler OnGameEnded;
         public event EventHandler OnNextRound;
 
         public Game()
         {
-            _grid = new int?[_gridSizeX, _gridSizeY];
-            _currentPlayer = new Random().Next(2);
+            _grid = new string[_gridSizeX, _gridSizeY];
+            _currentPlayer = new Random().Next(2) == 0 ? "x" : "o";
             GameIsRunning = true;
         }
 
@@ -66,8 +65,7 @@ namespace Connect_Four_Server
                 string[] element = new string[_gridSizeX];
                 for (int xPos = 0; xPos < _gridSizeX; xPos++)
                 {
-                    element[xPos] += ((_grid[xPos, yPos] == null) ? " " :
-                        (_grid[xPos, yPos] == 0) ? "x" : "o");
+                    element[xPos] += (_grid[xPos, yPos] == null ? " " : _grid[xPos, yPos]);
                 }
                 grid += " " + string.Join(" | ", element) + "\n";
 
@@ -82,13 +80,14 @@ namespace Connect_Four_Server
         #region GameCore
         private void NextRound()
         {
-            _currentPlayer = (_currentPlayer + 1) % 2;
+            _currentPlayer = _currentPlayer == "x" ? "o" : "x";
             OnNextRound?.Invoke(this, EventArgs.Empty);
         }
 
-        private int CheckForWinOrDraw()
+        private bool WinOrDraw()
         {
-            for (int currentPlayer = 0; currentPlayer < 2; currentPlayer++)
+            string currentPlayer = "x";
+            for (int i = 0; i < 2; i++)
             {
                 for (int xPos = 0; xPos < _gridSizeX; xPos++)
                 {
@@ -116,32 +115,38 @@ namespace Connect_Four_Server
                             && _grid[xPos, yPos] == currentPlayer && _grid[xPos - 1, yPos + 1] == currentPlayer
                             && _grid[xPos - 2, yPos + 2] == currentPlayer && _grid[xPos - 3, yPos + 3] == currentPlayer))
                         {
-                            OnGameEnded?.Invoke(this, EventArgs.Empty);
                             GameIsRunning = false;
-                            return currentPlayer;
+                            OnGameEnded?.Invoke(this, EventArgs.Empty);
+                            return true;
                         }
                     }
                 }
+                currentPlayer = "o";
             }
-            return -1;
+            return false;
         }
         #endregion GameCore
 
         #region Player
-        public void PlayerAction(int player, int xPos)
+        public void PlayerAction(string player, int xPos)
         {
             ValidateAction(player, xPos);
             _grid[xPos, GetNextYPos(xPos)] = player;
+            if (WinOrDraw())
+                return;
             NextRound();
         }
 
-        private void ValidateAction(int player, int xPos)
+        private void ValidateAction(string player, int xPos)
         {
             if (!GameIsRunning)
                 throw new InvalidPlayerAction("The game is over");
 
-            if (player != _currentPlayer)
+            if ((player != "x" && player != "o") || player != _currentPlayer)
                 throw new InvalidPlayerAction("The player is not on the move");
+
+            if (xPos < 0 || xPos >= _gridSizeX)
+                throw new InvalidPlayerAction("The given position is out of range");
 
             if (GetNextYPos(xPos) == -1)
                 throw new InvalidPlayerAction("The column is already filled up");

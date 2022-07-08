@@ -15,6 +15,7 @@ namespace Connect_Four_Server
             game = new Game();
 
             game.OnNextRound += Game_OnNextRound;
+            game.OnGameEnded += Game_OnGameEnded;
 
             Game_OnNextRound(null, null);
         }
@@ -40,6 +41,16 @@ namespace Connect_Four_Server
             {
                 Game_OnNextRound(null, null);
             }
+        }
+
+        private static void Game_OnGameEnded(object sender, EventArgs e)
+        {
+            Console.Clear();
+            Console.WriteLine(game.PrintGrid());
+            Console.WriteLine("Spieler {0} hat gewonnen", game.CurrentPlayer);
+            Console.WriteLine("Drücken Sie eine ENTER um das Spiel neu zu starten");
+            Console.ReadLine();
+            Main(null);
         }
     }
 }
