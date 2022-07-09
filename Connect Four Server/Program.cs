@@ -31,7 +31,7 @@ namespace Connect_Four_Server
             char playerAction = (char)Console.ReadKey().KeyChar;
             if (!char.IsNumber(playerAction))
             {
-                Console.WriteLine("Ungültige Eingabe");
+                Game_OnNextRound(null, null);
             }
 
             try

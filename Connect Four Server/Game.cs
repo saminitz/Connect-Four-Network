@@ -8,6 +8,8 @@ namespace Connect_Four_Server
 {
     internal class Game
     {
+        static Random random = new Random();
+
         private const int _gridSizeX = 7;
         private const int _gridSizeY = 6;
         private string[,] _grid;
@@ -33,7 +35,7 @@ namespace Connect_Four_Server
         public Game()
         {
             _grid = new string[_gridSizeX, _gridSizeY];
-            _currentPlayer = new Random().Next(2) == 0 ? "x" : "o";
+            _currentPlayer = random.Next(2) == 0 ? "x" : "o";
             GameIsRunning = true;
         }
 
