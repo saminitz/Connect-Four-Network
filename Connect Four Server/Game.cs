@@ -26,8 +26,9 @@ namespace Connect_Four_Server
             get; private set;
         }
 
-        public event EventHandler OnGameEnded;
         public event EventHandler OnNextRound;
+        public event EventHandler OnPlayerWon;
+        public event EventHandler OnGameDraw;
 
         public Game()
         {
@@ -84,9 +85,10 @@ namespace Connect_Four_Server
             OnNextRound?.Invoke(this, EventArgs.Empty);
         }
 
-        private bool WinOrDraw()
+        private bool HasPlayerWon()
         {
-            string currentPlayer = "x";
+            string checkPlayer = "x";
+
             for (int i = 0; i < 2; i++)
             {
                 for (int xPos = 0; xPos < _gridSizeX; xPos++)
@@ -97,33 +99,45 @@ namespace Connect_Four_Server
                         if (
                             // horizontal
                             (xPos + 3 < _gridSizeX
-                            && _grid[xPos, yPos] == currentPlayer && _grid[xPos + 1, yPos] == currentPlayer
-                            && _grid[xPos + 2, yPos] == currentPlayer && _grid[xPos + 3, yPos] == currentPlayer)
+                            && _grid[xPos, yPos] == checkPlayer && _grid[xPos + 1, yPos] == checkPlayer
+                            && _grid[xPos + 2, yPos] == checkPlayer && _grid[xPos + 3, yPos] == checkPlayer)
                             ||
                             // vertical
                             (yPos + 3 < _gridSizeY
-                            && _grid[xPos, yPos] == currentPlayer && _grid[xPos, yPos + 1] == currentPlayer
-                            && _grid[xPos, yPos + 2] == currentPlayer && _grid[xPos, yPos + 3] == currentPlayer)
+                            && _grid[xPos, yPos] == checkPlayer && _grid[xPos, yPos + 1] == checkPlayer
+                            && _grid[xPos, yPos + 2] == checkPlayer && _grid[xPos, yPos + 3] == checkPlayer)
                             ||
                             //diagonal down right
                             (xPos + 3 < _gridSizeX && yPos + 3 < _gridSizeY
-                            && _grid[xPos, yPos] == currentPlayer && _grid[xPos + 1, yPos + 1] == currentPlayer
-                            && _grid[xPos + 2, yPos + 2] == currentPlayer && _grid[xPos + 3, yPos + 3] == currentPlayer)
+                            && _grid[xPos, yPos] == checkPlayer && _grid[xPos + 1, yPos + 1] == checkPlayer
+                            && _grid[xPos + 2, yPos + 2] == checkPlayer && _grid[xPos + 3, yPos + 3] == checkPlayer)
                             ||
                             //diagonal down left
                             (xPos - 3 >= 0 && yPos + 3 < _gridSizeY
-                            && _grid[xPos, yPos] == currentPlayer && _grid[xPos - 1, yPos + 1] == currentPlayer
-                            && _grid[xPos - 2, yPos + 2] == currentPlayer && _grid[xPos - 3, yPos + 3] == currentPlayer))
+                            && _grid[xPos, yPos] == checkPlayer && _grid[xPos - 1, yPos + 1] == checkPlayer
+                            && _grid[xPos - 2, yPos + 2] == checkPlayer && _grid[xPos - 3, yPos + 3] == checkPlayer))
                         {
-                            GameIsRunning = false;
-                            OnGameEnded?.Invoke(this, EventArgs.Empty);
                             return true;
                         }
                     }
                 }
-                currentPlayer = "o";
+                checkPlayer = "o";
             }
+
             return false;
+        }
+
+        private bool IsGameDraw()
+        {
+            for (int xPos = 0; xPos < _gridSizeX; xPos++)
+            {
+                for (int yPos = 0; yPos < _gridSizeY; yPos++)
+                {
+                    if (_grid[xPos, yPos] == null)
+                        return false;
+                }
+            }
+            return true;
         }
         #endregion GameCore
 
@@ -132,8 +146,18 @@ namespace Connect_Four_Server
         {
             ValidateAction(player, xPos);
             _grid[xPos, GetNextYPos(xPos)] = player;
-            if (WinOrDraw())
+            if (HasPlayerWon())
+            {
+                GameIsRunning = false;
+                OnPlayerWon?.Invoke(this, EventArgs.Empty);
                 return;
+            }
+            else if (IsGameDraw())
+            {
+                GameIsRunning = false;
+                OnGameDraw?.Invoke(this, EventArgs.Empty);
+                return;
+            }
             NextRound();
         }
 
